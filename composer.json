@@ -13,6 +13,8 @@
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
+        "laravel/passport": "8.2",
+        "lcobucci/jwt": "3.3.3",
         "laravel/tinker": "^2.0"
     },
     "require-dev": {
@@ -39,6 +41,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files" : [
+            "app/Helpers/functions.php"
         ]
     },
     "autoload-dev": {
