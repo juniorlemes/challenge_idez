@@ -20,18 +20,20 @@ class AccountController extends Controller
             'tipo_accounts' => 'required',
             'agencia' => 'required',
             'numero' => 'required',
-            'cpf' => 'required|unique:accounts_pessoal',
-            'nome' => 'required'
+            'cpf' => 'required|unique:accounts_pessoal,users',
+            'nome' => 'required',
+            'iduser' => 'unique:accounts_pessoal'
         ];
        $mensagens = [
             'tipo_accounts.required' => 'Informe o tipo da conta (Pessoal ou Empresarial)!',
             'agencia.required' => 'Informe a agência!',
             'numero.required' => 'Informe o número da conta!',
             'cpf.required' => 'Informe o CPF!',
-            'cpf.unique' => 'O CPF informado já está cadastrado para esse tipo de conta!',
-            'nome.required' => 'Informe o nome!'
+            'cpf.unique' => 'O CPF informado já está cadastrado no sistema!',
+            'nome.required' => 'Informe o nome!',
+            'iduser.unique' => 'O usuário informado já possuí uma conta pessoal!'
        ];
-       
+
         $request->validate($regras, $mensagens);
 
 
@@ -41,7 +43,7 @@ class AccountController extends Controller
         $account->numero = $request->numero;
         $account->digito = $request->digito;
         $account->save();
-        
+
         $accountPessoal = new AccountPessoal();
         $accountPessoal->idaccount = $account->id;
         $accountPessoal->iduser = $request->user()->id;
@@ -62,20 +64,22 @@ class AccountController extends Controller
             'tipo_accounts' => 'required|string',
             'agencia' => 'required|string',
             'numero' => 'required|string',
-            'cnpj' => 'required|unique:accounts_empresarial',
+            'cnpj' => 'required|unique:accounts_empresarial,users',
             'nome_fantasia' => 'required|string',
             'razao_social' => 'required|string',
+            'iduser' => 'unique:accounts_empresarial'
         ];
        $mensagens = [
             'tipo_accounts.required' => 'Informe o tipo da conta (Pessoal ou Empresarial)!',
             'agencia.required' => 'Informe a agência!',
             'numero.required' => 'Informe o número da conta!',
             'cnpj.required' => 'Informe o CNPJ!',
-            'cnpj.unique' => 'O CNPJ informado já está cadastrado para o este tipo de conta!',
+            'cnpj.unique' => 'O CNPJ informado já está cadastrado no sistema!',
             'nome_fantasia.required' => 'Informe o nome fantasia!',
             'razao_social.required' => 'Informe a razão social!',
+            'iduser.unique' => 'O usuário informado já possuí uma conta empresarial!'
        ];
-       
+
         $request->validate($regras, $mensagens);
 
         $account = new Account();
@@ -84,7 +88,7 @@ class AccountController extends Controller
         $account->numero = $request->numero;
         $account->digito = $request->digito;
         $account->save();
-        
+
         $accountEmpresarial = new AccountEmpresarial();
         $accountEmpresarial->idaccount = $account->id;
         $accountEmpresarial->iduser = $request->user()->id;

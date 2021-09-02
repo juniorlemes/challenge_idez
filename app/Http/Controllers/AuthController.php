@@ -19,7 +19,7 @@ class AuthController extends Controller
         $regras = [
             'name' => 'required|string',
             'email' => 'required|unique:users|string|email',
-            'cpf' => 'required|unique:users',
+            'cpf' => 'required|unique:users,accounts_pessoal,accounts_empresarial',
             'telefone' => 'required',
             'password' => 'required|min:6',
             'confirmPassword' => 'required|same:password'
@@ -30,14 +30,14 @@ class AuthController extends Controller
             'email.unique' => 'O e-mail informado já está cadastrado!',
             'email.email' => 'O e-mail informado é inválido!',
             'cpf.required' => 'Informe o CPF!',
-            'cpf.unique' => 'O CPF informado já está cadastrado!',
+            'cpf.unique' => 'O CPF informado já está cadastrado no sistema!',
             'password.required' => 'Informe a senha de acesso!',
             'password.min' => 'A senha deve ter no mínimo 6 caracteres!',
             'confirmPassword.required' => 'É necessário confirmar a senha!',
             'confirmPassword.same' => 'A senhas informadas não são iguais!'
        ];
-       
-        $request->validate($regras, $mensagens);     
+
+        $request->validate($regras, $mensagens);
 
         $user = new User();
         $user->name     = $request->name;
@@ -51,10 +51,10 @@ class AuthController extends Controller
             return response()->json([
                 'success' => "Usuário cadastrado com sucesso!"
             ],201);
-        } 
+        }
             return response()->json([
                 'erro' => "Ocorreu um erro ao cadastrar o usuário."
-            ]);        
+            ]);
     }
 
     public function login(Request $request) {
@@ -67,14 +67,14 @@ class AuthController extends Controller
             'email.required'    => 'Informe o e-mail!',
             'password.required' => 'Informe a senha de acesso!'
        ];
-       
-        $request->validate($regras, $mensagens);     
+
+        $request->validate($regras, $mensagens);
 
         $credenciais = [
             'email'    => $request->email,
             'password' => $request->password
         ];
-    
+
         if(!Auth::attempt($credenciais)){
             return response()->json([
                 'erro' => 'Acesso negado!'
