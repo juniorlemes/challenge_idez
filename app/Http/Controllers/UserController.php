@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
+    /**
+     * Lista todos os usuários
+     */
     public function listAll()
     {
         $user = User::all();
@@ -19,6 +22,10 @@ class UserController extends Controller
         ],200);
     }
 
+    /**
+     * Lista um usuário passando o nome
+     * ou número do documento
+     */
     public function list($param){
         $user = DB::table('users');
         $user->where(strtolower("name"), "LIKE", strtolower($param)."%" );

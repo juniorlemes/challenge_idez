@@ -6,7 +6,7 @@ use App\Models\TipoAccount;
 class TipoAccountsSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Insere no banco os tipos de contas.
      *
      * @return void
      */

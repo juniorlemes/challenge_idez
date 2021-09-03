@@ -8,10 +8,8 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-/**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+    /**
+     * Cria um novo usuário
      */
     public function create(Request $request)
     {
@@ -57,6 +55,9 @@ class AuthController extends Controller
         ],422);
     }
 
+    /**
+     * Realiza o login na API
+     */
     public function login(Request $request) {
 
         $regras = [
@@ -89,6 +90,9 @@ class AuthController extends Controller
         ],200);
     }
 
+    /**
+     * Realiza o logout
+     */
     public function logout(Request $request) {
         $user = $request->user()->token()->revoke();
 

@@ -15,6 +15,9 @@ class AccountController extends Controller
     const tipoContaPessoal = 1;
     const tipoContaEmpresarial = 2;
 
+    /**
+     * Cria uma conta do tipo Pessoal (Person)
+     */
     function createPessoal(Request $request) {
 
         $regras = [
@@ -41,7 +44,7 @@ class AccountController extends Controller
              'error' => 'O usuário informado não existe. Verifique!'
          ],422);
         }
-        
+
         $account = new Account();
         $account->idtipo_accounts = self::tipoContaPessoal;
         $account->agencia = $request->agencia;
@@ -63,6 +66,9 @@ class AccountController extends Controller
 
     }
 
+    /**
+     * Cria uma conta do tipo Empresarial (Company)
+     */
     function createEmpresarial(Request $request) {
 
         $regras = [
@@ -112,6 +118,12 @@ class AccountController extends Controller
         ]);
     }
 
+    /**
+     * Lista a conta com usuários e transações
+     * vinculados a ela
+     * @param integer $id
+     * @return json
+     */
     function listAccounts($id){
         $account = DB::table('accounts as a');
         $account->join('tipo_account as ta', 'ta.id','=','a.idtipo_accounts');
@@ -122,7 +134,7 @@ class AccountController extends Controller
         $account->addSelect('a.numero');
         $account->addSelect('a.digito');
         $account->where('a.id', $id);
-        
+
         $resultAccount = [];
         $resultAccount[$id] = $account->get();
 
@@ -143,7 +155,7 @@ class AccountController extends Controller
                 $accountEmpresarial->addSelect('ae.cnpj');
                 $accountEmpresarial->where('ae.idaccount', $id);
                 $resultAccount[$id]['Usuários'] = $accountEmpresarial->get();
-            }            
+            }
 
             $transcaction = DB::table('transaction as t');
             $transcaction->join('operation as o', 'o.id', '=', 't.idoperation');
@@ -151,13 +163,13 @@ class AccountController extends Controller
             $transcaction->addSelect('t.valor');
             $transcaction->addSelect('t.created_at');
             $transcaction->where('t.idaccount', $id);
-        
-            $resultAccount[$id]['Transações'] = $transcaction->get();       
+
+            $resultAccount[$id]['Transações'] = $transcaction->get();
 
             return response()->json([
                 'resposta' => $resultAccount
             ]);
-            
+
         }
 
         return response()->json([
@@ -165,4 +177,3 @@ class AccountController extends Controller
         ]);
     }
 }
-    

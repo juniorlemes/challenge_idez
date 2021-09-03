@@ -9,6 +9,10 @@ use App\Models\Operation;
 
 class TransactionController extends Controller
 {
+
+    /**
+     * Cria uma transação
+     */
     function createTransaction(Request $request) {
 
         $regras = [
@@ -20,10 +24,10 @@ class TransactionController extends Controller
             'idaccount.required' => 'O ID da conta não foi informado!',
             'idaccount.integer' => 'O valor informado para o ID da conta é inválido.',
             'idoperation.required' => 'O ID da operação não foi informado!',
-            'idoperation.integer' => 'O valor informado para o ID da operação é inválido.',            
+            'idoperation.integer' => 'O valor informado para o ID da operação é inválido.',
             'valor.required' => 'Informe o valor da operação!'
        ];
-       
+
         $request->validate($regras, $mensagens);
 
        $account = Account::find($request->idaccount);
@@ -48,7 +52,7 @@ class TransactionController extends Controller
         return response()->json([
             'success' => 'Transação realizada com sucesso!'
         ],200);
-        
+
 
 
 
