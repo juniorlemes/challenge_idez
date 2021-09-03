@@ -19,7 +19,7 @@ class AuthController extends Controller
         $regras = [
             'name' => 'required|string',
             'email' => 'required|unique:users|string|email',
-            'cpf' => 'required|unique:users,accounts_pessoal,accounts_empresarial',
+            'cpf' => 'required|unique:users',
             'telefone' => 'required',
             'password' => 'required|min:6',
             'confirmPassword' => 'required|same:password'
@@ -52,9 +52,9 @@ class AuthController extends Controller
                 'success' => "Usuário cadastrado com sucesso!"
             ],201);
         }
-            return response()->json([
-                'erro' => "Ocorreu um erro ao cadastrar o usuário."
-            ]);
+        return response()->json([
+            'erro' => "Ocorreu um erro ao cadastrar o usuário."
+        ],422);
     }
 
     public function login(Request $request) {
@@ -94,6 +94,6 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => 'Usuário desconectado com sucesso!'
-        ]);
+        ],200);
     }
 }

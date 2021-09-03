@@ -19,7 +19,7 @@ class CreateAccountsEmpresarialTable extends Migration
             $table->string('razao_social');
             $table->string('cnpj')->unique(); 
             $table->biginteger('idaccount')->unsigned();
-            $table->biginteger('iduser')->unsigned();
+            $table->biginteger('iduser')->unsigned()->unique();
             $table->timestamps();
         });
     }

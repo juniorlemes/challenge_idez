@@ -18,7 +18,7 @@ class CreateAccountsPessoalTable extends Migration
             $table->string('nome');
             $table->string('cpf')->unique();      
             $table->biginteger('idaccount')->unsigned();  
-            $table->biginteger('iduser')->unsigned();    
+            $table->biginteger('iduser')->unsigned()->unique();    
             $table->timestamps();
         });
     }

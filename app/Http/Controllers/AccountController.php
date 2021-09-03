@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Account;
 use App\Models\AccountPessoal;
 use App\Models\AccountEmpresarial;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class AccountController extends Controller
@@ -20,7 +21,7 @@ class AccountController extends Controller
             'tipo_accounts' => 'required',
             'agencia' => 'required',
             'numero' => 'required',
-            'cpf' => 'required|unique:accounts_pessoal,users',
+            'cpf' => 'required|unique:accounts_pessoal',
             'nome' => 'required',
             'iduser' => 'unique:accounts_pessoal'
         ];
@@ -64,7 +65,7 @@ class AccountController extends Controller
             'tipo_accounts' => 'required|string',
             'agencia' => 'required|string',
             'numero' => 'required|string',
-            'cnpj' => 'required|unique:accounts_empresarial,users',
+            'cnpj' => 'required|unique:accounts_empresarial',
             'nome_fantasia' => 'required|string',
             'razao_social' => 'required|string',
             'iduser' => 'unique:accounts_empresarial'
@@ -103,43 +104,55 @@ class AccountController extends Controller
     }
 
     function listAccounts($id){
-
-
-
         $account = DB::table('accounts as a');
         $account->addSelect('a.id');
         $account->addSelect('a.tipo_accounts');
         $account->addSelect('a.agencia');
         $account->addSelect('a.numero');
         $account->addSelect('a.digito');
-
-        if($id == self::tipoContaPessoal) {
-            $account->addSelect('ap.nome');
-            $account->addSelect('ap.cpf');
-            $account->join('accounts_pessoal as ap', 'ap.idaccount','=','a.id');
-        }
-
-        if($id == self::tipoContaEmpresarial) {
-            $account->addSelect('ae.nome_fantasia');
-            $account->addSelect('ae.razao_social');
-            $account->addSelect('ae.cnpj');
-            $account->addSelect('u.*');
-            $account->join('accounts_empresarial as ae', 'ae.idaccount','=','a.id');
-            $account->join('users as u', 'u.id','=','ae.iduser')->dd();
-        }
-
-
-
-
         $account->where('a.id', $id);
+        
+        $resultAccount = [];
+        $resultAccount[$id] = $account->get();
 
+        if($account->count() > 0){
+            if($id == self::tipoContaPessoal) {
+                $accountPessoal = DB::table('accounts_pessoal as ap');
+                $accountPessoal->addSelect('ap.nome');
+                $accountPessoal->addSelect('ap.cpf');
+                $accountPessoal->where('ap.idaccount', $id);
 
+                $resultAccount[$id]['Usuários'] = $accountPessoal->get();
+            }
+            
+            if($id == self::tipoContaEmpresarial) {
+                $accountEmpresarial = DB::table('accounts_empresarial as ae');
+                $accountEmpresarial->addSelect('ae.nome_fantasia');
+                $accountEmpresarial->addSelect('ae.razao_social');
+                $accountEmpresarial->addSelect('ae.cnpj');
+                $accountEmpresarial->where('ae.idaccount', $id);
 
+                $resultAccount[$id]['Usuários'] = $accountEmpresarial->get();
+            }            
+            
+            $transcaction = DB::table('transaction as t');
+            $transcaction->join('operation as o', 'o.id', '=', 't.idoperation');
+            $transcaction->addSelect('o.operation');
+            $transcaction->addSelect('t.valor');
+            $transcaction->addSelect('t.created_at');
+            $transcaction->where('t.idaccount', $id);
+        
+            $resultAccount[$id]['Transações'] = $transcaction->get();       
 
-        $resultAccount = $account->get();
+            return response()->json([
+                'resposta' => $resultAccount
+            ]);
+            
+        }
 
         return response()->json([
-            'Resultado' => $resultAccount
+            'resposta' => 'Nenhuma conta encontrada!'
         ]);
     }
 }
+    

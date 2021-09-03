@@ -25,9 +25,15 @@ class UserController extends Controller
         if(somenteNumeros($param)){
             $user->orWhere('cpf', somenteNumeros($param));
         }
+        if($user->count() > 0) {
+            return response()->json([
+                'resposta' => $user->get()
+            ],200);
+        }
+
         return response()->json([
-            'usuário' => $user->get()
-        ],200);
+            'resposta' => 'Nenhum usuário encontrado!'
+        ]);
     }
 
 }
