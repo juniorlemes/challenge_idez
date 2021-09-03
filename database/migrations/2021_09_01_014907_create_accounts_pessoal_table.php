@@ -16,7 +16,7 @@ class CreateAccountsPessoalTable extends Migration
         Schema::create('accounts_pessoal', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('cpf')->unique();      
+            $table->string('cpf',20)->unique();      
             $table->biginteger('idaccount')->unsigned();  
             $table->biginteger('iduser')->unsigned()->unique();    
             $table->timestamps();
