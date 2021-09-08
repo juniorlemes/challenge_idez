@@ -28,7 +28,7 @@ class UserController extends Controller
      */
     public function list($param){
         $user = DB::table('users');
-        $user->where(strtolower("name"), "LIKE", strtolower($param)."%" );
+        $user->where("name", "LIKE", strtolower($param)."%" );
         if(somenteNumeros($param)){
             $user->orWhere('cpf', somenteNumeros($param));
         }
